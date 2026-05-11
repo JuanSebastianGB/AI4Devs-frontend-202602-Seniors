@@ -6,3 +6,6 @@
 | NOV-8 | [Story] Kanban UI — columns, cards, Unknown lane, mobile | Done | 2026-05-11T00:55:48.359Z |
 | NOV-9 | [Story] Drag-and-drop — optimistic move, PUT, rollback, refetch | Done | 2026-05-11T00:55:48.556Z |
 | NOV-10 | [Story] QA gate — typecheck, CI unit suite, optional Playwright | Done | 2026-05-11T00:55:48.877Z |
+| NOV-11 | [Frontend] Vertical slice: CV upload lives in candidateApi (FileUploader) | Backlog | — |
+| NOV-12 | [Frontend] Vertical slice: candidate creation via candidateApi (AddCandidateForm) | Backlog | — |
+| NOV-13 | [Frontend] Vertical slice: remove duplicate axios candidateService + dependency cleanup | Backlog | — |

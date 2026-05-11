@@ -4,7 +4,8 @@ Esta carpeta es una **copia de respaldo literal** de los issues exportados desde
 
 ## Cómo se generó
 
-- **Filtro aplicado:** estado **Done** (completados).
+- **Filtro original:** estado **Done** (completados) — NOV-5..NOV-10.
+- **Refresh posterior:** se añadieron también NOV-11, NOV-12 y NOV-13, exportados vía `get_issue` con su estado **actual** en Linear (Backlog en el momento del snapshot, aunque el código ya está commiteado en este repo). Cuando se transicionen a Done en Linear, conviene re-exportarlos para actualizar `status` y `completedAt`.
 - **Fuente:** API de Linear vía integración MCP (`list_issues` → `get_issue` por identificador).
 - **Contenido:** título, descripción (markdown), metadatos y relaciones tal como los devuelve la API; comentarios listados aparte (vacíos en esta exportación).
 
