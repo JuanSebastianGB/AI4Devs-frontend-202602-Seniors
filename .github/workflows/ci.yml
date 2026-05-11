@@ -17,6 +17,15 @@ jobs:
         working-directory: frontend
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check colocated tests for changed frontend sources
+        if: github.event_name == 'pull_request'
+        working-directory: ${{ github.workspace }}
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: scripts/ci/check-frontend-test-colocation.sh
 
       - uses: pnpm/action-setup@v4
         with:

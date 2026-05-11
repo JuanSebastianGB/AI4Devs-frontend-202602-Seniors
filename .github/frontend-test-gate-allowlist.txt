@@ -1,0 +1,8 @@
+# Frontend test-colocation gate — allowlist
+#
+# One path per line, relative to the repo root. Lines starting with `#`
+# and blank lines are ignored. Matches are exact (no globs).
+#
+# Add a path here only when a colocated *.test.{ts,tsx,js,jsx} would be
+# meaningless (pure re-exports, generated stubs, framework barrels).
+# Always include a comment explaining why.

@@ -1,0 +1,9 @@
+{
+  "required_fields": [
+    "cluster",
+    "coupling_rationale",
+    "dependency_category",
+    "test_impact"
+  ],
+  "note": "Golden shape for what each deepening candidate must cover per Contracts; agent listings should satisfy these dimensions."
+}

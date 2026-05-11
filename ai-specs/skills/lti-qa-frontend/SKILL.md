@@ -37,6 +37,13 @@ First-time Playwright browsers: `pnpm exec playwright install` (or `pnpm exec pl
 - Requires **`DATABASE_URL`** (and a running Postgres) for the backend server to become ready at `http://localhost:3010/`.
 - Local: start DB (`docker compose up -d` from repo root), ensure **`DATABASE_URL` is a full URL** (see `lti-backend-minimal`), run **`pnpm exec prisma migrate deploy`** (or `prisma:migrate:dev`) and **`pnpm exec prisma db seed`** in `backend/` when tests need data, then `pnpm run test:e2e` from `frontend/`. With servers already up, `reuseExistingServer` skips restart outside CI.
 
+### CI vs local server reuse
+
+- **`reuseExistingServer`** is `true` when **either** `CI` is unset **or** `PLAYWRIGHT_REUSE_EXISTING=1` is set. Otherwise (`CI=true` without the override) Playwright starts fresh servers and **fails** if ports `3000` / `3010` are already taken.
+- **CI / Actions** (recommended): `CI=true pnpm run test:e2e` with both ports free — matches `.github/workflows/ci.yml`.
+- **Local with servers already running**: `pnpm run test:e2e` (no `CI`). Playwright reuses your `pnpm start` + backend.
+- **Local but you need `CI=true`** (e.g. to force `forbidOnly` / retries / `github` reporter): `PLAYWRIGHT_REUSE_EXISTING=1 CI=true pnpm run test:e2e`.
+
 ## When RTL vs Playwright
 
 - **RTL** — component logic, forms validation messages, isolated UI states.

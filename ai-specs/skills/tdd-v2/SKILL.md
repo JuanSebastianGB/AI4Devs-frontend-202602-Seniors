@@ -90,6 +90,7 @@ Each cycle:
 ## Gotchas
 
 - **NEVER** write implementation before a failing test — the RED phase is non-negotiable
+- **Agents must not** submit GREEN without **evidence of RED** on the same test file: run the suite with the new test alone, confirm it fails for the right reason, and quote the failure in the PR or commit body before changing implementation
 - **GREEN phase** must not add speculative behavior — only what's needed to pass
 - **REFACTOR phase** must not change behavior — only improve structure
 - Don't skip running tests after GREEN to confirm green state

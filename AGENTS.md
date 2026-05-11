@@ -103,6 +103,8 @@ This project has a graphify knowledge graph at `graphify-out/`. **You MUST use i
 
 **After any code modification in this session:** run `graphify update .` to keep the graph current (AST-only, no API cost). If the CLI exits non-zero but `graphify-out/` was updated, treat the graph as refreshed (some local `graphify` builds have a post-run bug); re-run only if `GRAPH_REPORT.md` did not change.
 
+For automation (hooks, CI, agent loops), prefer **`scripts/graphify-update.sh`** instead of calling `graphify update .` directly. The wrapper exits **0** when `graphify-out/GRAPH_REPORT.md` or `graphify-out/graph.json` actually changed (even if graphify itself returned non-zero due to the known post-run bug), and **1** only when nothing was refreshed and graphify failed. Pass extra args through, e.g. `scripts/graphify-update.sh frontend/src`.
+
 **Violation:** If you answer an architecture or codebase question without checking graphify first, you have failed. Correct yourself immediately by querying the graph and updating your answer.
 
 **When graphify is NOT required:**

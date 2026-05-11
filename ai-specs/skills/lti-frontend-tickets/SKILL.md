@@ -14,6 +14,7 @@ description: >
 2. **Graphify** (if cross-module or unfamiliar) — `read graphify-out/GRAPH_REPORT.md` or `graphify query` per `AGENTS.md`.
 3. **Linear** (optional) — use `linear-lti-issues` to create/update the ticket with paths and test plan (include test-first unit scenarios).
 4. **RED — unit tests first** — Jest + RTL: add failing tests that describe the new behavior (`frontend/`, `pnpm test` / watch). **MUST** follow **tdd-v2** (`.cursor/skills/tdd-v2/SKILL.md`) for frontend unit/component work.
+   - **Hard checkpoint (do not skip):** before touching implementation, run `CI=true pnpm test` (or watch mode) **once** with only the new test file added. Confirm the new assertion(s) **fail** for the right reason (missing behavior, not a typo). Quote the failing message in the PR description or commit body. Agents must not batch the test and implementation into a single edit without observing this RED state.
 5. **GREEN — implement** — smallest change in `frontend/` that makes the new tests pass (Bootstrap, Router, existing patterns). **Apply `lti-frontend-practices`** (`.cursor/skills/lti-frontend-practices/SKILL.md`) for hooks, effects, composition, and `frontend/src` file placement before or while coding.
 6. **REFACTOR** — clean up while **CI=true pnpm test** stays green.
 7. **E2E** (if in scope) — Playwright (`pnpm run test:e2e`) with DB + API up when `webServer` starts the backend.

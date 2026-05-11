@@ -1,0 +1,15 @@
+# Each non-comment line must appear in improve-codebase-architecture SKILL.md or refs/*.md (case-insensitive).
+# Purpose-linked: exploration routing, candidate shape, parallel design, RFC automation, deepening reference.
+
+subagent_type Explore
+gh issue create
+refs/deepening-reference.md
+at least three Agent
+parallel
+problem-space brief
+MUST NOT show interface proposals
+boundary tests
+dependency category
+Cluster
+orchestration
+deepening_candidates

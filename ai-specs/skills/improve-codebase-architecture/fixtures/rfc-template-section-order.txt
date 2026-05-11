@@ -1,0 +1,6 @@
+# These ## headings must appear in refs/deepening-reference.md in this order (first match positions strictly increasing).
+## Problem
+## Proposed Interface
+## Dependency Strategy
+## Testing Strategy
+## Implementation Recommendations

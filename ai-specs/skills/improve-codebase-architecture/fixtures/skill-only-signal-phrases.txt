@@ -1,0 +1,4 @@
+# Each line must appear in SKILL.md (case-insensitive). Anchors friction-as-signal + structured outputs from Contracts.
+surface friction encountered while exploring as primary signal
+exploration_notes
+github_issue_url

@@ -38,8 +38,8 @@ describe('AddCandidateForm', () => {
 
     await waitFor(() => {
       const alert = screen.getByRole('alert');
-      expect(alert.textContent).toMatch(/error al subir archivo/i);
-      expect(alert.textContent).toMatch(/tipo no válido/i);
+      expect(alert).toHaveTextContent(/error al subir archivo/i);
+      expect(alert).toHaveTextContent(/tipo no válido/i);
     });
   });
 
@@ -51,10 +51,10 @@ describe('AddCandidateForm', () => {
     await userEvent.upload(fileInput, new File(['a'], 'one.pdf', { type: 'application/pdf' }));
     await userEvent.click(screen.getByRole('button', { name: /subir archivo/i }));
 
-    await waitFor(() => expect(screen.getByRole('alert')).toBeTruthy());
+    await waitFor(() => expect(screen.getByRole('alert')).toBeInTheDocument());
 
     await userEvent.upload(fileInput, new File(['b'], 'two.pdf', { type: 'application/pdf' }));
-    expect(screen.queryByRole('alert')).toBeNull();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
   it('clears a prior submit error after a successful CV upload', async () => {
@@ -65,7 +65,7 @@ describe('AddCandidateForm', () => {
     await userEvent.click(screen.getByRole('button', { name: /^Enviar$/i }));
 
     await waitFor(() => {
-      expect(screen.getByRole('alert').textContent).toMatch(/añadir candidato/i);
+      expect(screen.getByRole('alert')).toHaveTextContent(/añadir candidato/i);
     });
 
     mockedUpload.mockResolvedValueOnce({
@@ -78,9 +78,9 @@ describe('AddCandidateForm', () => {
     await userEvent.click(screen.getByRole('button', { name: /subir archivo/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/archivo subido con éxito/i)).toBeTruthy();
+      expect(screen.getByText(/archivo subido con éxito/i)).toBeInTheDocument();
     });
-    expect(screen.queryByText(/error al añadir candidato/i)).toBeNull();
+    expect(screen.queryByText(/error al añadir candidato/i)).not.toBeInTheDocument();
   });
 
   it('clears previous error at the start of a new submit attempt', async () => {
@@ -90,14 +90,14 @@ describe('AddCandidateForm', () => {
     mockedCreate.mockRejectedValueOnce(new Error('Datos inválidos: fallo'));
     await userEvent.click(screen.getByRole('button', { name: /^Enviar$/i }));
 
-    await waitFor(() => expect(screen.getByRole('alert')).toBeTruthy());
+    await waitFor(() => expect(screen.getByRole('alert')).toBeInTheDocument());
 
     mockedCreate.mockResolvedValueOnce(undefined);
     await userEvent.click(screen.getByRole('button', { name: /^Enviar$/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/candidato añadido con éxito/i)).toBeTruthy();
+      expect(screen.getByText(/candidato añadido con éxito/i)).toBeInTheDocument();
     });
-    expect(screen.queryByText(/error al añadir candidato/i)).toBeNull();
+    expect(screen.queryByText(/error al añadir candidato/i)).not.toBeInTheDocument();
   });
 });

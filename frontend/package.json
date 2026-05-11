@@ -24,7 +24,8 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "@playwright/test": "^1.49.1"
+    "@playwright/test": "^1.49.1",
+    "@types/testing-library__jest-dom": "^5.14.9"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -34,6 +35,8 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "typecheck": "tsc --noEmit",
+    "test:colocation": "bash ../scripts/ci/check-frontend-test-colocation.sh",
+    "verify": "pnpm run typecheck && CI=true pnpm test && pnpm run test:colocation",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
