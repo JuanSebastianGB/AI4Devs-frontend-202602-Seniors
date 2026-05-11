@@ -34,6 +34,10 @@ The mean of interview scores for that application, shown on the candidate card w
 
 ## Decisions
 
+- **Add-candidate flow: upload OK, create fails:** **CV upload** (`POST /upload`) and **candidate creation** (`POST /candidates`) are **independent steps**. If upload succeeds but create fails (network, 5xx, validation), the client keeps the returned **`filePath` / `fileType`** and the user may **retry submit** without uploading again — unless the backend documents that orphan files expire or become invalid (then document that exception and adjust UX). No automatic rollback of server-side files from the frontend in the default case.
+- **CV upload failure (UI):** Errors from **`POST /upload`** must be **visible** in the add-candidate flow — same pattern as submit errors (e.g. parent `Alert` via a callback such as **`onUploadError`** from `FileUploader` to `AddCandidateForm`). **Avoid** relying on **`console.error` alone** for user-facing failures.
+- **Add-candidate errors (language):** User-visible copy in **`AddCandidateForm`** stays **Spanish-first**. The API module may throw **`Error`** with neutral or English technical text; the **form** (or a thin mapper) wraps **network**, **5xx**, and **generic** failures with **Spanish** framing. For **400** validation, show the server’s **`message`** when it is clearly meant for humans (e.g. parsed JSON `message`); do not blindly prepend English-only strings that duplicate backend wording.
+- **Add-candidate shared `error` state:** Clear the form **`error`** at the **start** of each user action that can fix or supersede the failure: **new upload attempt** (e.g. click upload), **new submit**, and when **changing the selected file** in the CV input. Keep **dismiss** on `Alert` as an additional path if the component is dismissible — do not rely on dismiss alone to avoid stale messages after retry. On **successful CV upload** (callback with stored file metadata), clear **`error`** entirely — even if it came from a prior **submit** failure — so the user is not stuck with a stale message after fixing the CV.
 - **Position detail URL (browser):** `/positions/:positionId` — plural, consistent with the positions list. JSON requests still use the API prefix `/position/:id/...`.
 - **Failed stage update (after drag):** **Rollback** — revert the card to the column that still matches server state; show a concise error (inline or toast). Do not leave the board showing a stage the server did not accept.
 - **Candidate step name not in flow:** Show their card in a dedicated **Unknown / unmatched** lane (or strip) with a visible warning — never drop them into an arbitrary real stage and never hide them. Place that lane **after** all regular stages (right on desktop, **bottom** when columns stack on mobile).
@@ -48,3 +52,8 @@ The mean of interview scores for that application, shown on the candidate card w
 ## Flagged ambiguities
 
 - External exercise handout shows `PUT /candidates/:id/stage` and string `"3"` — **resolved**: this repo uses `PUT /candidates/:id` with **integer** `currentInterviewStep` (step id) and integer `applicationId`; path `:id` is the **Candidate** id.
+- **Orphan files after successful `POST /upload` and failed `POST /candidates`:** server-side retention, expiry, or invalidation of stored CV paths is **not specified** in this context. The client follows **Decisions** (retry create with existing `filePath` / `fileType`) until product/backend documents otherwise.
+
+## Grill session (closed)
+
+Add-candidate / **`candidateApi`** product rules from the May 2026 grill are integrated into **Decisions** above (not duplicated here). Implementation is tracked in Linear as **NOV-11** → **NOV-12** → **NOV-13** (vertical slices).
