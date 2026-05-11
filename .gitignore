@@ -1,9 +1,13 @@
 # Ignore in all directories
 **/.DS_Store
-#**/.env
-**/.env.example
 **/node_modules
 **/prompts_master.md
+
+# Local env / secrets (never commit). Example files stay tracked.
+**/.env
+backend/.env
+frontend/.env
+**/.env.local
 
 # other dependencies
 **/.pnp
@@ -11,6 +15,7 @@
 
 # testing
 **/coverage
+frontend/test-results/
 
 # production
 **/build
@@ -25,4 +30,7 @@ yarn-error.log*
 .idea
 .vscode
 
-# .env
+# graphify
+graphify-out/
+
+.pnpm-store
