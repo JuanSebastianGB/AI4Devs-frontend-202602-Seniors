@@ -1,10 +1,24 @@
 import React, { useState } from 'react';
-import { getApiBaseUrl } from '../apiConfig';
+import { createCandidate } from '../services/candidateApi';
 import { Form, Button, Alert, InputGroup, FormControl, Card, Container, Row, Col } from 'react-bootstrap';
 import { Trash } from 'react-bootstrap-icons';
 import FileUploader from './FileUploader';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+
+const formatCvUploadErrorForUser = (message) => {
+    if (message.includes('Could not reach the API at')) {
+        return 'No se pudo subir el CV: compruebe que el servidor API esté en ejecución y la configuración de REACT_APP_API_URL.';
+    }
+    return `Error al subir archivo: ${message}`;
+};
+
+const formatSubmitErrorForUser = (message) => {
+    if (message.includes('Could not reach the API at')) {
+        return 'Error al añadir candidato: no se pudo conectar con el servidor. Compruebe que el backend esté en ejecución.';
+    }
+    return `Error al añadir candidato: ${message}`;
+};
 
 const AddCandidateForm = () => {
     const [candidate, setCandidate] = useState({
@@ -47,12 +61,25 @@ const AddCandidateForm = () => {
         setCandidate({ ...candidate, [section]: updatedSection });
     };
 
-    const handleCVUpload = (fileData) => {
-        setCandidate({ ...candidate, cv: fileData });
+    const handleCvUploadSuccess = (fileData) => {
+        setCandidate((prev) => ({ ...prev, cv: fileData }));
+        setError('');
+        setSuccessMessage('');
+    };
+
+    const handleCvUploadError = (message) => {
+        setError(formatCvUploadErrorForUser(message));
+        setSuccessMessage('');
+    };
+
+    const clearErrorForNewUploadAttempt = () => {
+        setError('');
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+        setSuccessMessage('');
         try {
             const candidateData = {
                 ...candidate,
@@ -74,27 +101,12 @@ const AddCandidateForm = () => {
                 endDate: experience.endDate ? experience.endDate.toISOString().slice(0, 10) : ''
             }));
 
-            const res = await fetch(`${getApiBaseUrl()}/candidates`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(candidateData)
-            });
-
-            if (res.status === 201) {
-                setSuccessMessage('Candidato añadido con éxito');
-                setError('');
-            } else if (res.status === 400) {
-                const errorData = await res.json();
-                throw new Error('Datos inválidos: ' + errorData.message);
-            } else if (res.status === 500) {
-                throw new Error('Error interno del servidor');
-            } else {
-                throw new Error('Error al enviar datos del candidato');
-            }
+            await createCandidate(candidateData);
+            setSuccessMessage('Candidato añadido con éxito');
+            setError('');
         } catch (error) {
-            setError('Error al añadir candidato: ' + error.message);
+            const message = error instanceof Error ? error.message : String(error);
+            setError(formatSubmitErrorForUser(message));
             setSuccessMessage('');
         }
     };
@@ -159,8 +171,10 @@ const AddCandidateForm = () => {
                             <Form.Group controlId="cv">
                                 <Form.Label>CV</Form.Label>
                                 <FileUploader
-                                    onChange={handleCVUpload}
-                                    onUpload={handleCVUpload}
+                                    onFileSelected={clearErrorForNewUploadAttempt}
+                                    onUploadAttemptStart={clearErrorForNewUploadAttempt}
+                                    onUpload={handleCvUploadSuccess}
+                                    onUploadError={handleCvUploadError}
                                     className="shadow-sm"
                                 />
                             </Form.Group>

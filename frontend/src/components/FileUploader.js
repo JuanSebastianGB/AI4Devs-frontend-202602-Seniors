@@ -1,43 +1,35 @@
 import React, { useState } from 'react';
-import { getApiBaseUrl } from '../apiConfig';
+import { uploadCvFile } from '../services/candidateApi';
 import { Button, InputGroup, FormControl, Spinner } from 'react-bootstrap';
 
-const FileUploader = ({ onChange, onUpload }) => {
+const FileUploader = ({ onUpload, onUploadError, onUploadAttemptStart, onFileSelected }) => {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('');
   const [fileData, setFileData] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-    setFileName(event.target.files[0].name);
-    onChange(event.target.files[0]);
+    const selected = event.target.files?.[0];
+    if (!selected) return;
+    setFile(selected);
+    setFileName(selected.name);
+    setFileData(null);
+    onFileSelected?.();
   };
 
   const handleFileUpload = async () => {
-    if (file) {
-      setLoading(true);
-      const formData = new FormData();
-      formData.append('file', file);
-
-      try {
-        const res = await fetch(`${getApiBaseUrl()}/upload`, {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!res.ok) {
-          throw new Error('Error al subir archivo');
-        }
-
-        const fileData = await res.json();
-        setFileData(fileData);
-        onUpload(fileData);
-      } catch (error) {
-        console.error('Error al subir archivo:', error);
-      } finally {
-        setLoading(false); // Asegura que loading se establezca a false después de la operación
-      }
+    if (!file) return;
+    onUploadAttemptStart?.();
+    setLoading(true);
+    try {
+      const result = await uploadCvFile(file);
+      setFileData(result);
+      onUpload(result);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      onUploadError?.(message);
+    } finally {
+      setLoading(false);
     }
   };
 
