@@ -96,3 +96,30 @@ If the position detail shows **“Failed to fetch”**, debug with **curl**, bac
 Run **multi-agent-investigation** on the harness after environment incidents and fold targeted improvements into **`multi-agent-investigation`**, **`lti-frontend-tickets`**, **`lti-qa-frontend`**, and **`lti-backend-minimal`** (without rewriting the whole repo): what to run, in what order, and how to verify API + UI.
 
 ---
+
+## Entry — 2026-05-10 (Add-candidate refactor + harness hardening)
+
+**Source:** Current Cursor chat session (prompts-jsgb-log skill).
+
+### User requests
+
+- Implement the tickets currently available on the Linear backlog (the ones not yet picked up): **NOV-11**, **NOV-12**, **NOV-13**. Treat them as a coordinated add-candidate refactor (typed `candidateApi`, Spanish-first UX error messages with English logs, shared error-state lifecycle across `AddCandidateForm` and `FileUploader`, removal of the legacy Axios `candidateService`).
+- Honour the harness while implementing: **mandatory TDD** for changed `frontend/` behavior per `tdd-v2` (RED → GREEN → REFACTOR with **Jest + RTL + user-event**), **Playwright** for E2E when the ticket asks for it, **`pnpm` only**, and **zero TypeScript / linter errors**.
+- After implementing, verify honestly whether **TDD** and **Playwright** were actually used as the harness requires — do not paper over partial adherence (e.g. test + implementation written in one go, no captured RED, no Playwright run).
+- Self-verify the whole system without relying on the user: run typecheck, `CI=true pnpm test`, and Playwright (`pnpm run test:e2e`); fix whatever blocks the harness from acting as a real safety net.
+- Treat **`harness hardening (LTI frontend repo)`** as the active plan and implement it end-to-end against the to-dos already created in the session (do **not** edit the plan file itself, do **not** recreate the to-dos, mark them in-progress as you work, and do not stop until they are all done). The plan covers:
+  - Wire `@testing-library/jest-dom` matchers into TypeScript (`react-app-env.d.ts` triple-slash + `@types/testing-library__jest-dom` devDep) so RTL assertions type-check, and restore idiomatic matchers in `AddCandidateForm.test.tsx`.
+  - Add a **`PLAYWRIGHT_REUSE_EXISTING`** escape hatch in `frontend/playwright.config.ts` so local `CI=true` runs can reuse already-running backend/frontend servers; document it in `lti-qa-frontend` and `frontend-cra-react.mdc`.
+  - Add **`scripts/ci/check-frontend-test-colocation.sh`** + `.github/frontend-test-gate-allowlist.txt` and wire them into the **frontend** job in `.github/workflows/ci.yml` (with `fetch-depth: 0`) so PRs that change `frontend/src/components/**` or `frontend/src/services/**` must ship a colocated `*.test.*` change. Expose it locally via a `pnpm run test:colocation` and a `pnpm run verify` aggregate script.
+  - Update **`lti-frontend-tickets`** and **`tdd-v2`** with an explicit **RED-run checkpoint**: agents must show a failing test before implementing, and never submit GREEN without evidence of RED.
+  - Document, in **`.cursor/rules/frontend-cra-react.mdc`**, that CRA 5’s Babel parser does not accept inline `import { type X }` — prefer a separate `import type` statement.
+  - Add **`scripts/graphify-update.sh`** that wraps `graphify update .`, exits `0` when `graphify-out/GRAPH_REPORT.md` or `graph.json` actually changed (even if the CLI returns non-zero due to its post-run bug), and only fails when nothing was refreshed; reference it from `AGENTS.md` for automation.
+  - Resolve the orphan **`ai-specs/skills/improve-codebase-architecture/`** by either committing it as an intentional skill or removing it — keep it if it is a real, useful skill in this repo.
+- After everything is implemented and verified, **commit the changes** using English conventional commits, **append a synthesized entry to `prompts/prompts-jsgb`** describing what was asked in this session, and **update the local Linear-tickets directory** (`linear-work-evidence/`) so it reflects the new tickets touched by this session (NOV-11, NOV-12, NOV-13).
+
+### Notes
+
+- Hard rules carried from `AGENTS.md`: **pnpm only**, **Context7/Exa before working with external libraries**, **zero TS/lint errors**, **graphify gate** before answering architecture questions and `graphify update .` (via the new wrapper) after code changes.
+- Pre-existing local edits to `CONTEXT.md` from a prior grill-with-docs session were left untouched per the “surgical changes” rule.
+
+---
