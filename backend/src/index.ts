@@ -31,11 +31,18 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middleware para permitir CORS desde http://localhost:3000
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
-}));
+// CORS: align with CRA dev server (localhost and 127.0.0.1). Override with CORS_ORIGINS=comma-separated list
+const corsOrigins = (process.env.CORS_ORIGINS ||
+  'http://localhost:3000,http://127.0.0.1:3000')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+app.use(
+  cors({
+    origin: corsOrigins,
+    credentials: true,
+  }),
+);
 
 // Import and use candidateRoutes
 app.use('/candidates', candidateRoutes);
@@ -51,7 +58,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const port = 3010;
+const port = Number(process.env.PORT) || 3010;
 
 app.get('/', (req, res) => {
   res.send('Hola LTI!');

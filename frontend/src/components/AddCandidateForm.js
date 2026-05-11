@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getApiBaseUrl } from '../apiConfig';
 import { Form, Button, Alert, InputGroup, FormControl, Card, Container, Row, Col } from 'react-bootstrap';
 import { Trash } from 'react-bootstrap-icons';
 import FileUploader from './FileUploader';
@@ -73,7 +74,7 @@ const AddCandidateForm = () => {
                 endDate: experience.endDate ? experience.endDate.toISOString().slice(0, 10) : ''
             }));
 
-            const res = await fetch('http://localhost:3010/candidates', {
+            const res = await fetch(`${getApiBaseUrl()}/candidates`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

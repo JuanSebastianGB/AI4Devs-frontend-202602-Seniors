@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "sync-skills": "./scripts/sync-ai-specs-skills.sh",
+    "verify:frontend": "pnpm --dir frontend run typecheck && CI=true pnpm --dir frontend test"
+  },
   "dependencies": {
     "dotenv": "^16.4.5"
   },

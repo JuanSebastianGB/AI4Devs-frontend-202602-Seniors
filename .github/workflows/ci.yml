@@ -1,0 +1,119 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    name: Frontend (typecheck + unit)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm run typecheck
+
+      - run: pnpm test
+        env:
+          CI: true
+
+  backend:
+    name: Backend (unit tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm test
+        env:
+          CI: true
+
+  e2e:
+    name: E2E (Playwright + Postgres)
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+      DATABASE_URL: postgresql://LTIdbUser:ci_test_password@localhost:5432/LTIdb
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: LTIdbUser
+          POSTGRES_PASSWORD: ci_test_password
+          POSTGRES_DB: LTIdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U LTIdbUser -d LTIdb"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Backend — install
+        working-directory: backend
+        run: pnpm install --frozen-lockfile
+
+      - name: Backend — Prisma migrate & seed
+        working-directory: backend
+        run: |
+          pnpm exec prisma generate
+          pnpm exec prisma migrate deploy
+          pnpm exec prisma db seed
+
+      - name: Frontend — install
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Playwright — Chromium
+        working-directory: frontend
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Playwright — test
+        working-directory: frontend
+        run: pnpm exec playwright test
+        env:
+          DATABASE_URL: postgresql://LTIdbUser:ci_test_password@localhost:5432/LTIdb

@@ -8,13 +8,18 @@
         "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
         "build": "tsc",
         "test": "jest",
-        "prisma:init": "npx prisma init",
-        "prisma:generate": "npx prisma generate",
-        "start:prod": "npm run build && npm start"
+        "prisma:init": "pnpm exec prisma init",
+        "prisma:generate": "pnpm exec prisma generate",
+        "prisma:migrate": "pnpm exec prisma migrate deploy",
+        "prisma:migrate:dev": "pnpm exec prisma migrate dev",
+        "start:prod": "pnpm run build && pnpm run start"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
+    "prisma": {
+        "seed": "ts-node --transpile-only prisma/seed.ts"
+    },
     "dependencies": {
         "@prisma/client": "^5.13.0",
         "cors": "^2.8.5",
