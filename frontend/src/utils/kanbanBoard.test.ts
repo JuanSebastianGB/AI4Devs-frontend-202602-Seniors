@@ -82,4 +82,11 @@ describe('stepIdForCandidateCardOver', () => {
     const grouped = groupCandidatesByInterviewSteps(steps, candidates);
     expect(stepIdForCandidateCardOver('candidate-99', grouped, steps)).toBe(5);
   });
+
+  it('returns null for malformed drop target ids', () => {
+    const steps = [{ id: 5, name: 'S', orderIndex: 1 }];
+    const grouped = groupCandidatesByInterviewSteps(steps, []);
+    expect(stepIdForCandidateCardOver('step-abc', grouped, steps)).toBeNull();
+    expect(stepIdForCandidateCardOver('candidate-xyz', grouped, steps)).toBeNull();
+  });
 });

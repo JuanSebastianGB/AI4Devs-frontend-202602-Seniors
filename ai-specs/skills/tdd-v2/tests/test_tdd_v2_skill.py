@@ -8,6 +8,8 @@ import json
 import re
 from pathlib import Path
 
+import yaml
+
 SKILL_DIR = Path(__file__).parent.parent
 SKILL_MD = SKILL_DIR / "SKILL.md"
 REFS_DIR = SKILL_DIR / "refs"

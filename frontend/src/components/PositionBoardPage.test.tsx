@@ -111,6 +111,32 @@ describe('PositionBoardPage', () => {
     expect(unknown.textContent).toContain('Score: 3.7');
   });
 
+  it('makes candidate cards keyboard focusable', async () => {
+    (global.fetch as jest.Mock).mockImplementation((url: string) => {
+      if (url.includes('interviewflow')) return mockResponse(true, flowJson);
+      if (url.includes('candidates')) {
+        return mockResponse(true, [
+          {
+            fullName: 'Pat Candidate',
+            currentInterviewStep: 'Screen',
+            averageScore: 4,
+            id: 1,
+            applicationId: 11,
+          },
+        ]);
+      }
+      return mockResponse(false, {}, 404);
+    });
+    renderAt('/positions/7');
+    await screen.findByText('Pat Candidate');
+    const pat = screen.getByText('Pat Candidate');
+    const card = pat.closest('.card');
+    expect(card).toBeTruthy();
+    await userEvent.tab();
+    await userEvent.tab();
+    expect(card).toHaveFocus();
+  });
+
   it('retries candidates only when that request failed', async () => {
     let candidatesCalls = 0;
     (global.fetch as jest.Mock).mockImplementation((url: string) => {

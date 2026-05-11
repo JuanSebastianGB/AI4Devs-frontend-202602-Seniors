@@ -21,6 +21,10 @@ check_frontmatter() {
     echo "FAIL: Missing YAML frontmatter"
     ERRORS=$((ERRORS + 1))
   fi
+  if [[ $(grep -n '^---$' "$SKILL_MD" | head -2 | wc -l) -lt 2 ]]; then
+    echo "FAIL: Missing closing YAML frontmatter delimiter"
+    ERRORS=$((ERRORS + 1))
+  fi
 }
 
 check_description() {

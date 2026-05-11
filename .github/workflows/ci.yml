@@ -75,18 +75,21 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: true
-      DATABASE_URL: postgresql://LTIdbUser:ci_test_password@localhost:5432/LTIdb
+      CI_DB_USER: ${{ vars.CI_DB_USER || 'lti_ci_user' }}
+      CI_DB_NAME: ${{ vars.CI_DB_NAME || 'lti_ci_db' }}
+      CI_DB_PASSWORD: ${{ secrets.CI_DB_PASSWORD || format('ci_{0}_{1}', github.run_id, github.run_attempt) }}
+      DATABASE_URL: postgresql://${{ vars.CI_DB_USER || 'lti_ci_user' }}:${{ secrets.CI_DB_PASSWORD || format('ci_{0}_{1}', github.run_id, github.run_attempt) }}@localhost:5432/${{ vars.CI_DB_NAME || 'lti_ci_db' }}
     services:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_USER: LTIdbUser
-          POSTGRES_PASSWORD: ci_test_password
-          POSTGRES_DB: LTIdb
+          POSTGRES_USER: ${{ vars.CI_DB_USER || 'lti_ci_user' }}
+          POSTGRES_PASSWORD: ${{ secrets.CI_DB_PASSWORD || format('ci_{0}_{1}', github.run_id, github.run_attempt) }}
+          POSTGRES_DB: ${{ vars.CI_DB_NAME || 'lti_ci_db' }}
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U LTIdbUser -d LTIdb"
+          --health-cmd "pg_isready -U ${{ vars.CI_DB_USER || 'lti_ci_user' }} -d ${{ vars.CI_DB_NAME || 'lti_ci_db' }}"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -124,5 +127,3 @@ jobs:
       - name: Playwright — test
         working-directory: frontend
         run: pnpm exec playwright test
-        env:
-          DATABASE_URL: postgresql://LTIdbUser:ci_test_password@localhost:5432/LTIdb

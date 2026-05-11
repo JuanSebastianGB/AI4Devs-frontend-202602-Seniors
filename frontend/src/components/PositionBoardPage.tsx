@@ -5,6 +5,7 @@ import {
   DndContext,
   DragEndEvent,
   DragOverlay,
+  KeyboardSensor,
   PointerSensor,
   useDraggable,
   useDroppable,
@@ -51,6 +52,7 @@ function KanbanCard(props: { candidate: PositionCandidateRow }) {
       className="mb-2 shadow-sm"
       {...listeners}
       {...attributes}
+      tabIndex={0}
     >
       <Card.Body className="py-2 px-3">
         <div className="fw-semibold">{props.candidate.fullName}</div>
@@ -111,7 +113,10 @@ const PositionBoardPage: React.FC = () => {
   const [activeDrag, setActiveDrag] = useState<PositionCandidateRow | null>(null);
   const [stageError, setStageError] = useState<string | null>(null);
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor),
+  );
 
   const loadFlow = useCallback(async () => {
     if (Number.isNaN(positionId)) {

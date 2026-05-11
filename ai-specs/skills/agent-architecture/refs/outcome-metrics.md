@@ -21,7 +21,7 @@ Quantitative metrics for multi-agent orchestration evaluation.
 ## Collection
 
 Instrument agents to emit:
-```
+```json
 { "event": "handoff", "from": "supervisor", "to": "reviewer", "latency_ms": 45 }
 { "event": "task_complete", "agent": "reviewer", "duration_ms": 1200 }
 ```

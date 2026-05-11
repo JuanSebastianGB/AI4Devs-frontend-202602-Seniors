@@ -9,7 +9,7 @@ description: >
 
 ## Quick start
 
-```
+```text
 1. RED  → write failing test for desired behavior
 2. GREEN → write minimal code to pass the test
 3. REFACTOR → clean code while tests stay green
@@ -18,7 +18,7 @@ description: >
 ## Workflows
 
 ### red-green-refactor loop
-```
+```text
 1. Identify a small unit of behavior to test
 2. RED: Write a test that describes the expected behavior (must fail) — 30s to 2min
 3. GREEN: Write the minimal code to make the test pass (no more) — 1 to 5min
@@ -27,7 +27,7 @@ description: >
 ```
 
 ### test-first bugfix
-```
+```text
 1. Write a test that reproduces the bug (test must fail)
 2. GREEN: Write minimal fix to make test pass
 3. REFACTOR: Clean up if needed
@@ -78,7 +78,7 @@ Contracts {
 
 ## Loop invariant
 
-```
+```text
 RED (failing test) → GREEN (passing) → REFACTOR (still passing) → repeat
 ```
 

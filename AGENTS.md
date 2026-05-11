@@ -1,4 +1,4 @@
-#MANDATORY
+# MANDATORY
 
 - As package manager only use pnpm
 - You have to use context7 MCP server or EXA MCP server before start working with an external library
@@ -66,7 +66,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 # Mandatory
 
-For any information required externaly use as much as possible context7 MCP server
+For any information required externally, use the context7 MCP server as much as possible.
 
 # Language
 

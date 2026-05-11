@@ -56,10 +56,12 @@ export function stepIdForCandidateCardOver(
   sortedSteps: InterviewStepDTO[],
 ): number | null {
   if (overId.startsWith('step-')) {
-    return parseInt(overId.slice('step-'.length), 10);
+    const stepId = parseInt(overId.slice('step-'.length), 10);
+    return Number.isNaN(stepId) ? null : stepId;
   }
   if (overId.startsWith('candidate-')) {
     const candidateId = parseInt(overId.slice('candidate-'.length), 10);
+    if (Number.isNaN(candidateId)) return null;
     for (const s of sortedSteps) {
       if (grouped.byStepId[s.id]?.some((c) => c.id === candidateId)) {
         return s.id;

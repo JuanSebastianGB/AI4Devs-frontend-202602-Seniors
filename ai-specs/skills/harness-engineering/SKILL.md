@@ -1,7 +1,7 @@
 ---
 name: harness-engineering
 description: >
-  Assess a codebase's AI-codng agent readiness across 8 pillars and 5 maturiChatGPT, ¿qué hace el skill harness engineering? ty levels,
+  Assess a codebase's AI-coding agent readiness across 8 pillars and 5 maturity levels,
   then implement a vendor-appropriate harness (CLAUDE.md for Claude Code, AGENTS.md + .cursor/rules/
   for Cursor, .opencode/commands/ for OpenCode). Use when bootstrapping a new project for AI agents,
   improving an existing codebase's agent-readiness, or implementing path-scoped rules, git hooks,

@@ -28,8 +28,7 @@ Author **new** skills: folder layout, tight `SKILL.md`, optional `refs/` and `sc
 - Do not refactor unrelated repo skills or replace sudolang-skillreducer
 
 ## Contract
-```
-sudo
+```sudo
 Contracts {
   Inputs {
     user_request: string
@@ -60,8 +59,7 @@ Contracts {
 ```
 
 ## Workflow
-```
-sudo
+```sudo
 workflow:
   name: "author-agent-skill"
   description: "From intent to merge-ready skill folder with Sudolang contract."

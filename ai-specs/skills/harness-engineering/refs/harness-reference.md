@@ -246,7 +246,7 @@ When multiple rules match, they apply in order:
 ## Architecture
 
 <!-- AUTO:tree -->
-```
+```text
 [Auto-generated tree]
 ```
 <!-- /AUTO:tree -->
@@ -279,7 +279,7 @@ When multiple rules match, they apply in order:
 
 ## Architecture
 
-```
+```text
 [Auto-generated tree]
 ```
 
@@ -356,7 +356,7 @@ When multiple rules match, they apply in order:
 
 ### Superpowers (Recommended for Feature Work)
 
-```
+```sh
 /plugin marketplace add obra/superpowers-marketplace
 /plugin install superpowers@superpowers-marketplace
 ```
@@ -369,7 +369,7 @@ Skills:
 
 ### BMAD (Recommended for Large Projects)
 
-```
+```sh
 npx bmad-method install
 ```
 
