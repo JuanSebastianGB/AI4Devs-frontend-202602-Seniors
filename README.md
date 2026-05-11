@@ -47,39 +47,61 @@ The `prisma` directory contains the Prisma schema.
 
 ## First steps
 
-To get started with this project, follow these steps:
+Use **pnpm** only (see `AGENTS.md`).
 
-1. Clone the repo
-2. install the dependencias for frontend and backend
+1. Clone the repo.
+2. Copy **`.env.example`** to **`backend/.env`** and **`frontend/.env`**, then set `DATABASE_URL` to match Docker (`DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT`). Set `REACT_APP_API_URL` (default `http://localhost:3010`) in `frontend/.env`.
+3. Install dependencies:
+
+```sh
+cd frontend && pnpm install && cd ../backend && pnpm install
+```
+
+4. Start PostgreSQL (from repo root):
+
+```sh
+docker compose up -d
+```
+
+5. Apply migrations and generate Prisma client (from `backend/`):
+
+```sh
+cd backend
+pnpm run prisma:generate
+pnpm run prisma:migrate:dev
+```
+
+6. Run the backend API:
+
+```sh
+pnpm run dev
+```
+
+7. In another terminal, run the frontend:
+
 ```sh
 cd frontend
-npm install
-
-cd ../backend
-npm install
-```
-3. Build the backend server
-```
-cd backend
-npm run build
-````
-4. Run the backend server
-```
-cd backend
-npm start
-```
-5. In a new terminal window, build the frontend server:
-```
-cd frontend
-npm run build
-```
-6. Start the frontend server
-```
-cd frontend
-npm start
+pnpm start
 ```
 
-The backend server will be running at http://localhost:3010, and the frontend will be available at http://localhost:3000.
+The API listens on **http://localhost:3010** (or `PORT`), and the CRA dev server on **http://localhost:3000**.
+
+### Verification (optional)
+
+From `frontend/`:
+
+```sh
+pnpm run typecheck
+CI=true pnpm test
+pnpm exec playwright install chromium   # first time only
+pnpm run test:e2e                       # requires DB + DATABASE_URL for the API
+```
+
+From repo root, mirror Cursor skills into `ai-specs/skills/` after editing `.cursor/skills/`:
+
+```sh
+./scripts/sync-ai-specs-skills.sh
+```
 
 ## Docker y PostgreSQL
 
@@ -214,39 +236,7 @@ La descripción y diagrama del modelo de datos los tienes en [ModeloDatos.md](./
 
 ## Primeros Pasos
 
-Para comenzar con este proyecto, sigue estos pasos:
-
-1. Clona el repositorio.
-2. Instala las dependencias para el frontend y el backend:
-```sh
-cd frontend
-npm install
-
-cd ../backend
-npm install
-```
-3. Construye el servidor backend:
-```
-cd backend
-npm run build
-````
-4. Inicia el servidor backend:
-```
-cd backend
-npm start
-```
-5. En una nueva ventana de terminal, construye el servidor frontend:
-```
-cd frontend
-npm run build
-```
-6. Inicia el servidor frontend:
-```
-cd frontend
-npm start
-```
-
-El servidor backend estará corriendo en http://localhost:3010 y el frontend estará disponible en http://localhost:3000.
+Usa **pnpm** (igual que en la sección en inglés **First steps** arriba): copia `.env.example` a `backend/.env` y `frontend/.env`, `docker compose up -d`, luego `pnpm install` en `frontend/` y `backend/`, migraciones Prisma, `pnpm run dev` en backend y `pnpm start` en frontend.
 
 ## Docker y PostgreSQL
 

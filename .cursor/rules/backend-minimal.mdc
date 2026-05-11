@@ -1,0 +1,15 @@
+---
+description: Minimal Express + Prisma backend — env, migrations, CORS, no scope creep
+globs: backend/**
+alwaysApply: false
+---
+
+# Backend (minimal scope)
+
+- **Default rule:** change the backend only when a **frontend ticket** requires a contract fix, migration, bugfix, or env/CORS alignment — not for new domain features unless explicitly requested.
+- **Package manager:** `pnpm` from `backend/` (`pnpm exec prisma …`, not `npx` in scripts).
+- **Prisma:** `DATABASE_URL` in environment (see repo `.env.example`). Never commit credentials; never paste secrets into Linear or agent prompts.
+- **Migrations:** `pnpm run prisma:migrate:dev` in development; `pnpm run prisma:migrate` for deploy-style apply. DB must match `DATABASE_URL` (e.g. Docker Compose vars).
+- **CORS:** controlled by `CORS_ORIGINS` (comma-separated). Defaults include `http://localhost:3000` and `http://127.0.0.1:3000` for local CRA and Playwright.
+- **Port:** `PORT` env (default `3010`).
+- **Tests:** when you touch server code, prefer **TDD** using the repo `tdd-v2` skill; keep tests minimal and contract-focused.

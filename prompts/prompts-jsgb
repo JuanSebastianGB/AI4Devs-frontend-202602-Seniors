@@ -1,0 +1,98 @@
+
+---
+
+## Prompt 1
+
+In this monorepo use **pnpm only**. Remove `package-lock.json` from `frontend/` if present, generate `pnpm-lock.yaml` at repo root, `frontend/`, and `backend/` as needed, and keep `package.json` files aligned with test scripts, typecheck, and dependencies the project needs.
+
+---
+
+## Prompt 2
+
+Create or update root **`AGENTS.md`** as the harness contract: body in **English**; **pnpm** mandatory; **zero** TypeScript and linter errors; before working with an external library, use **Context7 or Exa**; primary work in **`frontend/`** (CRA, React, TypeScript, Bootstrap, Router). Include short sections on thinking before coding, minimal changes, and verification. Add the **Cursor harness** block: orchestration skills (`lti-frontend-tickets`, `lti-qa-frontend`, `lti-frontend-practices`, `tdd-v2`, `lti-backend-minimal`, `linear-lti-issues`), mandatory frontend TDD with Jest + RTL + user-event, gates `pnpm run typecheck` and `CI=true pnpm test`, Playwright for E2E when in scope, **curl smoke** before closing tickets that hit the API, and on Linear **never** paste credentials, full `.env` files, or private database URLs.
+
+---
+
+## Prompt 3
+
+Make **`ai-specs/skills/`** the canonical skills tree and point **`.cursor/skills`** at it (symlink). Add **`scripts/sync-ai-specs-skills.sh`** to sync skills (and commands if applicable) for checkouts that use a copy layout instead of a symlink. Document in `AGENTS.md` that edits under `.cursor/skills` and `ai-specs/skills` are the same content when symlinked.
+
+---
+
+## Prompt 4
+
+Implement the harness skills (each under `ai-specs/skills/`): **`tdd-v2`** (red–green–refactor, minimal characterization tests), **`lti-frontend-tickets`**, **`lti-frontend-practices`** (React 18, hooks, effects, composition, `frontend/src` layout), **`lti-qa-frontend`** (RTL, CI, Playwright, webServer), **`lti-backend-minimal`** (Postgres, `DATABASE_URL`, Prisma, CORS, migrations, API smoke), **`multi-agent-investigation`** (parallel subagents + synthesis; frontend angle when relevant), **`linear-lti-issues`**, **`agent-architecture`**, **`harness-engineering`**, **`write-a-skill`**, **`grill-with-docs`**. Include refs and validation scripts where each skill requires them.
+
+---
+
+## Prompt 5
+
+Add path-scoped Cursor rules: **`.cursor/rules/frontend-cra-react.mdc`** for `frontend/**` and **`.cursor/rules/backend-minimal.mdc`** for `backend/**`, consistent with CRA + React and the exercise’s minimal backend.
+
+---
+
+## Prompt 6
+
+Add the **graphify** gate to **`AGENTS.md`**: this repo has **`graphify-out/`**; before answering architecture or structure questions, read **`GRAPH_REPORT.md`** (and the wiki index if present); for cross-module relationships use the `graphify` CLI as documented; **after code changes** in a session, run **`graphify update .`**; if the CLI exits non-zero but the report was updated, treat the graph as refreshed.
+
+---
+
+## Prompt 7
+
+Create the Cursor command **`/enrich-work-ticket`**: a Markdown file under **`.cursor/commands/`** (and mirror under **`ai-specs/commands/`** if you keep that convention) with a fixed **Product Owner** prompt that takes raw ticket text in **`$ARGUMENTS`** and outputs a user story, three BDD scenarios, S/M/L complexity, and an INVEST table.
+
+---
+
+## Prompt 8
+
+Write root **`CONTEXT.md`** with the LTI glossary (canonical stage = integer `InterviewStep.id` in the PUT body; on GET the step name is display-only; **`applicationId`** required on update) and **board product decisions**: detail route **`/positions/:positionId`**; column order `orderIndex` then `id`; **Unknown** lane for step names that do not match the flow, **after** normal columns, **not** a drop target; **optimistic** drag with **rollback** if the PUT fails; after a successful PUT **refetch candidates only**; **split** load errors (flow failure → full-page error; candidates-only failure → columns plus retry candidates); average score on cards with **one** decimal; back navigation to **`/positions`**. State explicitly that a handout showing `PUT .../stage` with a string is **obsolete** vs **`PUT /candidates/:id`** with numeric `applicationId` and `currentInterviewStep`.
+
+---
+
+## Prompt 9
+
+On the **backend**, implement the board API contract: list candidates by position exposing the current step **display** name and fields needed for average score; **`PUT /candidates/:id`** updates the stage with **`applicationId`** and **`currentInterviewStep`** (numeric step id). Adjust Prisma/models if needed, **CORS** for the frontend origin in dev, and unit tests covering the stage update. Keep **`index.ts`** coherent for boot and routing.
+
+---
+
+## Prompt 10
+
+On the **frontend**, add **`frontend/src/apiConfig.js`** (and tests) with **`getApiBaseUrl()`**; add **`positionBoardApi.ts`** (fetch interview flow, candidates by position, stage PUT with clear network handling); add utilities under `frontend/src/utils/` if needed. In **`App.tsx`** register **`/positions/:positionId`** to the board component. In **`Positions.tsx`** link each position to its detail. Implement **`PositionBoardPage.tsx`**: columns = flow steps; cards = full name + average to one decimal; **drag-and-drop** (e.g. `@hello-pangea/dnd` or whatever the repo already uses); Unknown lane per `CONTEXT.md`; on mobile, stack columns full width.
+
+---
+
+## Prompt 11
+
+Apply **TDD** on the frontend for the board: tests for **`positionBoardApi`**, **`persistStageChange`** (optimistic + rollback), and **`PositionBoardPage.test.tsx`** (RTL + user-event) per the **`tdd-v2`** skill. Add **`frontend/src/setupTests.ts`** for `@testing-library/jest-dom` if missing.
+
+---
+
+## Prompt 12
+
+Configure **Playwright** in `frontend/`: **`playwright.config.ts`**, **`e2e/smoke.spec.ts`**, and **`e2e/position-board.spec.ts`** that start or assume backend + DB per project config and validate the board flow in CI and locally.
+
+---
+
+## Prompt 13
+
+Update **`.gitignore`** so local `.env` files are not committed (root, `backend/`, etc.). Update **`.env.example`** to state that **`DATABASE_URL` must be fully expanded** (no `${VAR}` inside the connection string that dotenv will not substitute). Update **`README.md`** if needed for setup, pnpm, and E2E.
+
+---
+
+## Prompt 14
+
+Add **`.github/workflows/ci.yml`**: **frontend** job (checkout, pnpm, frozen install, `pnpm run typecheck`, `pnpm test` with `CI: true`); **backend** job (pnpm, frozen install, `pnpm test` with `CI: true`); **e2e** job with **Postgres** service, CI `DATABASE_URL`, `prisma migrate deploy`, seed if applicable, Playwright browser install, and E2E run from `frontend/`.
+
+---
+
+## Prompt 15
+
+If the position detail shows **“Failed to fetch”**, debug with **curl**, backend logs, Postgres status, and the real **`DATABASE_URL`** value; fix configuration and document the pattern in **`lti-backend-minimal`**, **`lti-qa-frontend`**, and `AGENTS.md` so the next run does API smoke before closing the ticket.
+
+---
+
+## Prompt 16
+
+Run **multi-agent-investigation** on the harness after environment incidents and fold targeted improvements into **`multi-agent-investigation`**, **`lti-frontend-tickets`**, **`lti-qa-frontend`**, and **`lti-backend-minimal`** (without rewriting the whole repo): what to run, in what order, and how to verify API + UI.
+
+---

@@ -1,0 +1,15 @@
+---
+description: CRA + React LTI frontend — tickets first, TS, tests, API env, Playwright/CORS alignment
+globs: frontend/**
+alwaysApply: false
+---
+
+# Frontend (Create React App)
+
+- **Package manager:** `pnpm` only in this repo. Run scripts from `frontend/` (`pnpm install`, `pnpm start`, `pnpm test`, `pnpm run typecheck`, `pnpm run test:e2e`).
+- **API base URL:** use `getApiBaseUrl()` from `src/apiConfig.js` and `REACT_APP_API_URL` (see repo root `.env.example`). Do not hardcode `http://localhost:3010` in new code.
+- **TypeScript:** `tsconfig.json` has `strict: true`. Prefer **new** code in `.ts`/`.tsx`. Coexisting `.js` is allowed; do not widen types to silence errors.
+- **Tests (mandatory TDD for behavior):** for new or changed **behavior**, follow **RED → GREEN → REFACTOR** using the **`tdd-v2`** skill. **Unit/component stack:** **Jest + React Testing Library + `@testing-library/user-event` + `@testing-library/jest-dom`** via `react-scripts test` (`pnpm test` / `CI=true pnpm test`). **E2E:** **Playwright** in `frontend/e2e/` complements units (not a substitute for unit TDD). `baseURL` must stay **`http://localhost:3000`** unless backend `CORS_ORIGINS` is updated accordingly (avoid mixing `127.0.0.1` and `localhost` without updating CORS).
+- **CRA:** avoid `eject`. Prefer env vars and small modules over CRACO unless the team decides otherwise.
+- **UI:** Bootstrap / react-bootstrap patterns already in use; keep layout and a11y sensible (`getByRole` in tests).
+- **React patterns (hooks, effects, composition, layout):** follow the **`lti-frontend-practices`** skill (`.cursor/skills/lti-frontend-practices/SKILL.md`); use Context7 for library API details.
